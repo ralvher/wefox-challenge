@@ -12,7 +12,7 @@ const App = () => {
       path: "post",
       element: <PostPage />,
       children: [
-        { path: "", element: <Navigate to="post/all" replace /> },
+        { path: "", element: <Navigate to="all" replace /> },
         {
           path: "all",
           element: <AllPosts />,
