@@ -1,5 +1,5 @@
-import Page from "./page";
-import AllPosts from "./all";
-import PostDetail from "./detail";
+import PostLayout from "./Layout";
+import PostsOverview from "./Overview";
+import PostDetails from "./Details";
 
-export { Page, AllPosts, PostDetail };
+export { PostLayout, PostsOverview, PostDetails };

@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Navigate, useRoutes } from "react-router-dom";
-import { Page as PostPage, AllPosts, PostDetail } from "./post";
+
+import { PostLayout, PostDetails, PostsOverview } from "./post";
 
 const App = () => {
   const element = useRoutes([
@@ -10,14 +11,14 @@ const App = () => {
     },
     {
       path: "post",
-      element: <PostPage />,
+      element: <PostLayout />,
       children: [
         { path: "", element: <Navigate to="all" replace /> },
         {
           path: "all",
-          element: <AllPosts />,
+          element: <PostsOverview />,
         },
-        { path: ":id", element: <PostDetail /> },
+        { path: ":id", element: <PostDetails /> },
       ],
     },
   ]);

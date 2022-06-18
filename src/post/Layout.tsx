@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 import { PostProvider } from "./context";
 
-const Page = () => {
+const PostLayout = () => {
   return (
     <PostProvider>
       <div style={{ display: "flex", flexDirection: "column" }}>
@@ -13,4 +13,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default PostLayout;
