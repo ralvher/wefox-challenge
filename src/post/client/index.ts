@@ -7,13 +7,13 @@ interface PostErrorResponse {
   message: string;
   status: string | null;
 }
-interface Post {
-  id: string;
+export interface PostData {
+  id?: string;
   title: string;
   content: string;
-  lat: number | null;
-  long: number | null;
-  image: string | null;
+  lat?: number | null;
+  long?: number | null;
+  image?: string | null;
 }
 
 interface PostReponse<T> {
@@ -21,18 +21,18 @@ interface PostReponse<T> {
   data?: T;
 }
 
-export const getAllPosts = async (): Promise<PostReponse<Post[]>> => {
+export const getAllPosts = async (): Promise<PostReponse<PostData[]>> => {
   try {
     const { data = [] } = await api.get(PATH);
     return {
-      data: data.map(PostResponseMapper) as Post[],
+      data: data.map(PostResponseMapper) as PostData[],
     };
   } catch (error) {
     return { data: [], ...mapError(error as AxiosError) };
   }
 };
 
-export const getPostById = async (id: string): Promise<PostReponse<Post>> => {
+export const getPostById = async (id: string): Promise<PostReponse<PostData>> => {
   try {
     const { data } = await api.get(`${PATH}/${id}`);
     return {
@@ -43,7 +43,7 @@ export const getPostById = async (id: string): Promise<PostReponse<Post>> => {
   }
 };
 
-export const updatePost = async (post: Post): Promise<PostReponse<Post>> => {
+export const updatePost = async (post: PostData): Promise<PostReponse<PostData>> => {
   try {
     const { data } = await api.put(`${PATH}/${post.id}`);
     return {
@@ -73,7 +73,7 @@ export const createPost = async ({
   lat,
   long,
   image,
-}: Post): Promise<PostReponse<Post>> => {
+}: PostData): Promise<PostReponse<PostData>> => {
   try {
     const { data } = await api.post(PATH, {
       title,
@@ -96,7 +96,7 @@ const mapError = (error: AxiosError) => {
     } as PostErrorResponse,
   };
 };
-export const PostResponseMapper = (post: any): Post => {
+export const PostResponseMapper = (post: any): PostData => {
   return {
     id: post.id,
     title: post.title,
