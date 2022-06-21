@@ -6,7 +6,7 @@ import { PostProvider } from "./context";
 const PostLayout = () => {
   return (
     <PostProvider>
-      <div style={{ display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", flexDirection: "column", padding: 24, }}>
         <Outlet />
       </div>
     </PostProvider>
