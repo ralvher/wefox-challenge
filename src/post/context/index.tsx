@@ -4,10 +4,9 @@ import postModel, { Post, UsePost } from "./PostModel";
 
 interface PostProviderProps {
   children: React.ReactNode;
-  initialState?: Post[],
+  initialState?: Post[];
 }
 const PostContext = createContext<UsePost | null>(null);
-
 
 export function PostProvider({ children, initialState }: PostProviderProps) {
   const value = postModel({ initialState });
