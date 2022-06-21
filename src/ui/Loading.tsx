@@ -14,6 +14,8 @@ const Loading = () => {
         alignItems: "center",
         fontWeight: "bold",
         fontStyle: "italic",
+        top: 0,
+        left: 0,
       }}
     >
       Loading...
