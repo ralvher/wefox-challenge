@@ -6,9 +6,9 @@ export interface Post {
   id: string;
   title: string;
   content: string;
-  lat?: number | null;
-  long?: number | null;
-  imageUrl?: string | null;
+  lat: number | null;
+  long: number | null;
+  imageUrl: string | null;
 }
 
 export interface UsePost {
@@ -58,12 +58,15 @@ const usePost = ({ initialState = [] }: UsePostProps): UsePost => {
         content: post.content,
         long: post.long ?? null,
         lat: post.lat ?? null,
-        image: post.imageUrl ?? null,
+        imageUrl: post.imageUrl ?? null,
       };
       setIsLoading(true);
       setData((prevData) => prevData.concat(postToCreate));
 
-      const { data, error } = await postClient.createPost(postToCreate);
+      const { data, error } = await postClient.createPost({
+        ...postToCreate,
+        image: postToCreate.imageUrl,
+      });
 
       if (data) {
         setData((prevData) =>
@@ -97,7 +100,7 @@ const usePost = ({ initialState = [] }: UsePostProps): UsePost => {
     },
 
     edit: async (post: Post) => {
-      const currentEditablePost = getById(`${post.id}`);
+      const currentEditablePost = getById(post.id);
       if (!currentEditablePost) return;
 
       setIsLoading(true);
@@ -106,7 +109,12 @@ const usePost = ({ initialState = [] }: UsePostProps): UsePost => {
         prevData.map((current) => (current.id === post.id ? post : current))
       );
 
-      const { error } = await postClient.updatePost(post);
+      const postToEdit = {
+        ...post,
+        image: post.imageUrl ?? null,
+      };
+
+      const { error } = await postClient.updatePost(postToEdit);
 
       if (error) {
         setData((prevData) =>
@@ -123,7 +131,7 @@ const usePost = ({ initialState = [] }: UsePostProps): UsePost => {
 
 export const mapper = (post: postClient.PostData): Post => {
   return {
-    id: post.id,
+    id: String(post.id),
     title: post.title,
     content: post.content,
     long: post.long,

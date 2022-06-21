@@ -11,9 +11,9 @@ export interface PostData {
   id: string;
   title: string;
   content: string;
-  lat?: number | null;
-  long?: number | null;
-  image?: string | null;
+  lat: number | null;
+  long: number | null;
+  image: string | null;
 }
 
 interface PostReponse<T> {
@@ -45,11 +45,22 @@ export const getPostById = async (
   }
 };
 
-export const updatePost = async (
-  post: PostData
-): Promise<PostReponse<boolean>> => {
+export const updatePost = async ({
+  id,
+  title,
+  content,
+  long,
+  lat,
+  image,
+}: PostData): Promise<PostReponse<boolean>> => {
   try {
-    await api.put(`${PATH}/${post.id}`);
+    await api.put(`${PATH}/${id}`, {
+      title,
+      content,
+      lat: String(lat),
+      long: String(long),
+      image_url: image,
+    });
     return {
       data: true,
     };

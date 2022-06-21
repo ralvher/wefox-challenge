@@ -36,15 +36,18 @@ describe("PostModel", () => {
       id: "",
       title: "title",
       content: "content",
+      long: null,
+      lat: null,
+      imageUrl: null,
     };
 
     jest
       .spyOn(postClient, "getAllPosts")
       .mockResolvedValueOnce({ data: allPostMocked });
 
-    jest
-      .spyOn(postClient, "createPost")
-      .mockResolvedValueOnce({ data: { ...postToCreate, id: "my-id" } });
+    jest.spyOn(postClient, "createPost").mockResolvedValueOnce({
+      data: { ...postToCreate, id: "my-id", image: "", lat: null, long: null },
+    });
 
     const { result, waitForNextUpdate } = renderHook(() => usePostModel({}));
 
@@ -60,7 +63,7 @@ describe("PostModel", () => {
     expect(getById("my-id")).toEqual({
       content: "content",
       id: "my-id",
-      image: null,
+      imageUrl: null,
       lat: null,
       long: null,
       title: "title",
@@ -72,6 +75,9 @@ describe("PostModel", () => {
       id: "",
       title: "title",
       content: "content",
+      long: null,
+      imageUrl: null,
+      lat: null,
     };
 
     jest
