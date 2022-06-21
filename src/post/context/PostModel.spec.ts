@@ -33,6 +33,7 @@ describe("PostModel", () => {
 
   it("should allow to create a new post", async () => {
     const postToCreate: Post = {
+      id: "",
       title: "title",
       content: "content",
     };
@@ -43,7 +44,7 @@ describe("PostModel", () => {
 
     jest
       .spyOn(postClient, "createPost")
-      .mockResolvedValueOnce({ data: { id: "my-id", ...postToCreate } });
+      .mockResolvedValueOnce({ data: { ...postToCreate, id: "my-id" } });
 
     const { result, waitForNextUpdate } = renderHook(() => usePostModel({}));
 
@@ -68,6 +69,7 @@ describe("PostModel", () => {
 
   it("should not create a post when fail", async () => {
     const postToCreate: Post = {
+      id: "",
       title: "title",
       content: "content",
     };
@@ -76,11 +78,9 @@ describe("PostModel", () => {
       .spyOn(postClient, "getAllPosts")
       .mockResolvedValueOnce({ data: allPostMocked });
 
-    jest
-      .spyOn(postClient, "createPost")
-      .mockResolvedValueOnce({
-        error: { message: "an error happened", status: "500" },
-      });
+    jest.spyOn(postClient, "createPost").mockResolvedValueOnce({
+      error: { message: "an error happened", status: "500" },
+    });
 
     const { result, waitForNextUpdate } = renderHook(() => usePostModel({}));
 
@@ -90,10 +90,124 @@ describe("PostModel", () => {
       await result.current.create(postToCreate);
     });
 
-    const { data, getById, error} = result.current;
+    const { data, getById, error } = result.current;
 
     expect(data.length).toEqual(1);
     expect(getById("my-id")).toBeUndefined();
     expect(error).not.toBeNull();
+  });
+
+  it("should allow to remove a post", async () => {
+    jest
+      .spyOn(postClient, "getAllPosts")
+      .mockResolvedValueOnce({ data: allPostMocked });
+
+    jest
+      .spyOn(postClient, "removePostById")
+      .mockResolvedValueOnce({ data: true });
+
+    const { result, waitForNextUpdate } = renderHook(() => usePostModel({}));
+
+    await waitForNextUpdate();
+
+    const postToDelete = result.current.getById(postMock.id);
+
+    await act(async () => {
+      if (postToDelete) {
+        await result.current.remove(postToDelete);
+      }
+    });
+
+    const { data, getById } = result.current;
+
+    expect(data.length).toEqual(0);
+    expect(getById(postMock.id)).toBeUndefined();
+  });
+
+  it("should not remove a post when fail", async () => {
+    jest
+      .spyOn(postClient, "getAllPosts")
+      .mockResolvedValueOnce({ data: allPostMocked });
+
+    jest
+      .spyOn(postClient, "removePostById")
+      .mockResolvedValueOnce({ error: { message: "error", status: "500" } });
+
+    const { result, waitForNextUpdate } = renderHook(() => usePostModel({}));
+
+    await waitForNextUpdate();
+
+    const postToDelete = result.current.getById(postMock.id);
+
+    await act(async () => {
+      if (postToDelete) {
+        await result.current.remove(postToDelete);
+      }
+    });
+
+    const { data, getById } = result.current;
+
+    expect(data.length).toEqual(1);
+    expect(getById(postMock.id)).toBeDefined();
+  });
+
+  it("should allow to edit a  post", async () => {
+    jest
+      .spyOn(postClient, "getAllPosts")
+      .mockResolvedValueOnce({ data: allPostMocked });
+
+    jest.spyOn(postClient, "updatePost").mockResolvedValueOnce({ data: true });
+
+    const { result, waitForNextUpdate } = renderHook(() => usePostModel({}));
+
+    await waitForNextUpdate();
+
+    expect(result.current.getById(postMock.id)?.content).toEqual(
+      postMock.content
+    );
+
+    const postToEdit = result.current.getById(postMock.id);
+
+    await act(async () => {
+      if (postToEdit) {
+        await result.current.edit({ ...postToEdit, content: "my new content" });
+      }
+    });
+
+    expect(result.current.data.length).toEqual(1);
+    expect(result.current.getById(postMock.id)?.content).toEqual(
+      "my new content"
+    );
+  });
+
+  it("should not allow to edit a post when fail", async () => {
+    jest
+      .spyOn(postClient, "getAllPosts")
+      .mockResolvedValueOnce({ data: allPostMocked });
+
+    jest
+      .spyOn(postClient, "updatePost")
+      .mockResolvedValueOnce({ error: { message: "an error", status: "500" } });
+
+    const { result, waitForNextUpdate } = renderHook(() => usePostModel({}));
+
+    await waitForNextUpdate();
+
+    expect(result.current.getById(postMock.id)?.content).toEqual(
+      postMock.content
+    );
+
+    const postToEdit = result.current.getById(postMock.id);
+
+    await act(async () => {
+      if (postToEdit) {
+        await result.current.edit({ ...postToEdit, content: "my new content" });
+      }
+    });
+
+    expect(result.current.data.length).toEqual(1);
+    expect(result.current.getById(postMock.id)?.content).toEqual(
+      postMock.content
+    );
   });
 });
