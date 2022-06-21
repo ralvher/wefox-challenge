@@ -23,7 +23,7 @@ interface PostReponse<T> {
 
 export const getAllPosts = async (): Promise<PostReponse<PostData[]>> => {
   try {
-    const { data = [] } = await api.get(PATH);
+    const { data } = await api.get(PATH);
     return {
       data: data.map(PostResponseMapper) as PostData[],
     };
