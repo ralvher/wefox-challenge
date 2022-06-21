@@ -8,7 +8,7 @@ interface PostErrorResponse {
   status: string | null;
 }
 export interface PostData {
-  id?: string;
+  id: string;
   title: string;
   content: string;
   lat?: number | null;
@@ -32,7 +32,9 @@ export const getAllPosts = async (): Promise<PostReponse<PostData[]>> => {
   }
 };
 
-export const getPostById = async (id: string): Promise<PostReponse<PostData>> => {
+export const getPostById = async (
+  id: string
+): Promise<PostReponse<PostData>> => {
   try {
     const { data } = await api.get(`${PATH}/${id}`);
     return {
@@ -43,11 +45,13 @@ export const getPostById = async (id: string): Promise<PostReponse<PostData>> =>
   }
 };
 
-export const updatePost = async (post: PostData): Promise<PostReponse<PostData>> => {
+export const updatePost = async (
+  post: PostData
+): Promise<PostReponse<boolean>> => {
   try {
-    const { data } = await api.put(`${PATH}/${post.id}`);
+    await api.put(`${PATH}/${post.id}`);
     return {
-      data: PostResponseMapper(data),
+      data: true,
     };
   } catch (error) {
     return mapError(error as AxiosError);

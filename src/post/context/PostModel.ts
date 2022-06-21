@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import * as postClient from "../client";
 
 export interface Post {
-  id?: string;
+  id: string;
   title: string;
   content: string;
   lat?: number | null;
@@ -17,6 +17,8 @@ export interface UsePost {
   data: Post[];
   getById: (id: string) => Post | undefined;
   create: (post: Post) => Promise<void>;
+  remove: (post: Post) => Promise<void>;
+  edit: (post: Post) => Promise<void>;
 }
 
 interface UsePostProps {
@@ -42,11 +44,13 @@ const usePost = ({ initialState = [] }: UsePostProps): UsePost => {
     fetchPosts();
   }, []);
 
+  const getById = (id: string) => data.find((item) => item.id === id);
+
   return {
     isLoading,
     data,
     error,
-    getById: (id: string) => data.find((item) => item.id === id),
+    getById,
     create: async (post: Post) => {
       const postToCreate = {
         id: new Date().getTime().toString(),
@@ -74,6 +78,41 @@ const usePost = ({ initialState = [] }: UsePostProps): UsePost => {
           prevData.filter((post) => {
             return post.id !== postToCreate.id;
           })
+        );
+        setError(error.message);
+      }
+      setIsLoading(false);
+    },
+    remove: async (post: Post) => {
+      setIsLoading(true);
+      setData((prevData) => prevData.filter(({ id }) => id !== post.id));
+
+      const { error } = await postClient.removePostById(`${post.id}`);
+
+      if (error) {
+        setData((prevData) => prevData.concat(post));
+        setError(error.message);
+      }
+      setIsLoading(false);
+    },
+
+    edit: async (post: Post) => {
+      const currentEditablePost = getById(`${post.id}`);
+      if (!currentEditablePost) return;
+
+      setIsLoading(true);
+
+      setData((prevData) =>
+        prevData.map((current) => (current.id === post.id ? post : current))
+      );
+
+      const { error } = await postClient.updatePost(post);
+
+      if (error) {
+        setData((prevData) =>
+          prevData.map((current) =>
+            current.id === post.id ? currentEditablePost : current
+          )
         );
         setError(error.message);
       }
