@@ -32,18 +32,7 @@ export const getAllPosts = async (): Promise<PostReponse<PostData[]>> => {
   }
 };
 
-export const getPostById = async (
-  id: string
-): Promise<PostReponse<PostData>> => {
-  try {
-    const { data } = await api.get(`${PATH}/${id}`);
-    return {
-      data: PostResponseMapper(data),
-    };
-  } catch (error) {
-    return mapError(error as AxiosError);
-  }
-};
+
 
 export const updatePost = async ({
   id,

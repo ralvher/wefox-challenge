@@ -21,7 +21,7 @@ describe("PostModel", () => {
     expect(data).toEqual([
       {
         content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        id: "4d564f82-a48a-4ead-b864-958b8fca8f50",
+        id: "1",
         imageUrl:
           "https://c2.staticflickr.com/2/1269/4670777817_d657cd9819_b.jpg",
         lat: 40.41678,

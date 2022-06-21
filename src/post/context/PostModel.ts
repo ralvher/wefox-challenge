@@ -63,10 +63,7 @@ const usePost = ({ initialState = [] }: UsePostProps): UsePost => {
       setIsLoading(true);
       setData((prevData) => prevData.concat(postToCreate));
 
-      const { data, error } = await postClient.createPost({
-        ...postToCreate,
-        image: postToCreate.imageUrl,
-      });
+      const { data, error } = await postClient.createPost({...postToCreate, image: postToCreate.imageUrl});
 
       if (data) {
         setData((prevData) =>

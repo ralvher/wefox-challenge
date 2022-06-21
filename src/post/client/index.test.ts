@@ -2,7 +2,6 @@ import { axiosMock } from "../../tests/config";
 import {
   createPost,
   getAllPosts,
-  getPostById,
   PATH,
   PostResponseMapper,
   removePostById,
@@ -33,25 +32,6 @@ describe("getAllPosts", () => {
   });
 });
 
-describe("getPostById", () => {
-  afterEach(() => {
-    axiosMock.reset();
-  });
-  it("should return the post given an id", async () => {
-    axiosMock.onGet(PATH_WITH_ID).reply(200, postMock);
-    const { data, error } = await getPostById(postMock.id);
-    const expectedValue = PostResponseMapper(postMock);
-    expect(data).toEqual(expectedValue);
-    expect(error).toBeUndefined();
-  });
-
-  it("should return null when fail", async () => {
-    axiosMock.onGet(PATH_WITH_ID).reply(404);
-    const { data, error } = await getPostById(postMock.id);
-    expect(data).toBeUndefined();
-    expect(error).toBeDefined();
-  });
-});
 
 describe("updatePostById", () => {
   afterEach(() => {

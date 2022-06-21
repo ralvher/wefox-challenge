@@ -1,5 +1,5 @@
 export const postMock = {
-  id: "4d564f82-a48a-4ead-b864-958b8fca8f50",
+  id: "1",
   title: "Madrid",
   content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   lat: 40.41678,
